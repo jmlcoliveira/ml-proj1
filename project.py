@@ -94,8 +94,11 @@ for i in range(0, N):
     if mse < best_model_mse:
         best_model_mse = mse
         best_model = model
-        filename = f'models/best_model_step_{str(count).zfill(6)}_loss_{mse}.plt'
+        filename = f'models/best_model.plt'
         pickle.dump(model, open(filename, 'wb'))
+        filename = f'models/best_model_{str(count).zfill(6)}_loss_{mse}.plt'
+        pickle.dump(model, open(filename, 'wb'))
+    filename = f'models/checkpoint_step_{str(count).zfill(6)}_loss_{mse}.plt'
+    pickle.dump(model, open(filename, 'wb'))
     count = count+1
     print(f"Step {count-1} with Mean Squared Error: {mse}")
-    
