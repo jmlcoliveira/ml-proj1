@@ -5,6 +5,10 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.pipeline import make_pipeline
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
+import random as r
+import math
+import pickle
 
 def load_train_values(file_name):
     rows=[]
@@ -50,27 +54,48 @@ train_data = pd.read_csv("X_train.csv")
 X_train = []
 Y_train = []
 baseX = None
-for line in train_data.values:
+values = train_data.values
+r.shuffle(values)
+
+# scaler = StandardScaler()
+# values=scaler.fit(values).transform(values)
+# print(values.min(), values.max())
+
+for line in values:
     if line[0] == 0:
         baseX = [line[0], line[1], line[2], line[5], line[6], line[9], line[10]]
     X_train.append([line[0], baseX[1], baseX[2], baseX[3], baseX[4], baseX[5], baseX[6]])
     Y_train.append([line[1], line[2], line[5], line[6], line[9], line[10]])
 
-plt.figure()
-scaler = StandardScaler()
-train_data=scaler.fit(train_data).transform(train_data)
-print(train_data.min(), train_data.max())
+#plt.figure()
 
 # X_train = train_data[:, 1:]  # Features (columns 1 onwards)
 # y_train = train_data[:, 0]   # Target variable (timestep, column 0)
 
 # X_test = test_data[:, 1:]    # Features for test data
+X_val = X_train[math.floor(len(X_train)*0.8):]
+Y_val = Y_train[math.floor(len(Y_train)*0.8):]
 
-model = LinearRegression()
-model.fit(X_train, Y_train)
-y_pred = model.predict(X_test)
-mse = mean_squared_error(y_test, y_pred)
-r2 = r2_score(y_test, y_pred)
+X_train = X_train[:math.floor(len(X_train)*0.8)]
+Y_train = Y_train[:math.floor(len(Y_train)*0.8)]
 
-print(f"Mean Squared Error: {mse}")
-print(f"R-squared: {r2}")
+N=10000
+degree_labels = []
+best_model = None
+best_model_mse = 99
+count = 1
+for i in range(0, N):
+    degree=i+1 #degree of polynomial
+    model = make_pipeline(PolynomialFeatures(degree),LinearRegression())
+    # model = LinearRegression()
+    model.fit(X_train, Y_train)
+    y_pred = model.predict(X_val)
+    mse = mean_squared_error(Y_val, y_pred)
+    if mse < best_model_mse:
+        best_model_mse = mse
+        best_model = model
+        filename = f'models/best_model_step_{str(count).zfill(6)}_loss_{mse}.plt'
+        pickle.dump(model, open(filename, 'wb'))
+    count = count+1
+    print(f"Step {count} with Mean Squared Error: {mse}")
+    
