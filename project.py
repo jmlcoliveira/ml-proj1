@@ -18,29 +18,49 @@ X_train = []
 Y_train = []
 baseX = None
 values = train_data.values
-r.shuffle(values)
+# r.shuffle(values)
 
 # scaler = StandardScaler()
 # values=scaler.fit(values).transform(values)
 # print(values.min(), values.max())
 
+x_block = []
+y_block = []
 for line in values:
     if line[0] == 0:
         baseX = [line[0], line[1], line[2], line[5], line[6], line[9], line[10]]
-    X_train.append([line[0], baseX[1], baseX[2], baseX[3], baseX[4], baseX[5], baseX[6]])
-    Y_train.append([line[1], line[2], line[5], line[6], line[9], line[10]])
+    if line[0] == 10:
+        X_train.append(x_block)
+        x_block = []
+        Y_train.append(y_block)
+        y_block = []
+    x_block.append([line[0], baseX[1], baseX[2], baseX[3], baseX[4], baseX[5], baseX[6]])
+    y_block.append([line[1], line[2], line[5], line[6], line[9], line[10]])
+    #X_train.append([line[0], baseX[1], baseX[2], baseX[3], baseX[4], baseX[5], baseX[6]])
+    #Y_train.append([line[1], line[2], line[5], line[6], line[9], line[10]])
 
 #plt.figure()
+print(x_block[0], y_block[0])
 
 # X_train = train_data[:, 1:]  # Features (columns 1 onwards)
 # y_train = train_data[:, 0]   # Target variable (timestep, column 0)
 
 # X_test = test_data[:, 1:]    # Features for test data
+combined = list(zip(X_train, Y_train))
+r.shuffle(combined)
+X_train, Y_train = zip(*combined)
+
 X_val = X_train[math.floor(len(X_train)*0.8):]
 Y_val = Y_train[math.floor(len(Y_train)*0.8):]
 
 X_train = X_train[:math.floor(len(X_train)*0.8)]
 Y_train = Y_train[:math.floor(len(Y_train)*0.8)]
+
+X_val = [item for sublist in X_val for item in sublist]
+Y_val = [item for sublist in Y_val for item in sublist]
+
+X_train = [item for sublist in X_train for item in sublist]
+Y_train = [item for sublist in Y_train for item in sublist]
 
 N=10000
 degree_labels = []
@@ -57,7 +77,7 @@ for i in range(0, N):
     if mse < best_model_mse:
         best_model_mse = mse
         best_model = model
-        filename = f'best_model.plt'
+        filename = f'models/best_model.plt'
         pickle.dump(model, open(filename, 'wb'))
         filename = f'models/best_model_{str(count).zfill(6)}_loss_{mse}.plt'
         pickle.dump(model, open(filename, 'wb'))
