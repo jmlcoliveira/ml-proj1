@@ -3,7 +3,7 @@ import pickle
 import numpy as np
 
 # load the model from disk
-loaded_model = pickle.load(open('best_model.plt', 'rb'))
+loaded_model = pickle.load(open('best_model copy.plt', 'rb'))
 X_test = pd.read_csv("X_test.csv")
 arr = []
 for line in X_test.values:
