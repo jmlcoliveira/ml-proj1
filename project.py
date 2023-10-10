@@ -10,43 +10,6 @@ import random as r
 import math
 import pickle
 
-def load_train_values(file_name):
-    rows=[]
-    lines = open(file_name).readlines()
-    for line in lines[1:]:
-        parts = line.split(',')
-        rows.append([
-                    float(parts[0]), #timestep
-                    float(parts[1]), #x1
-                    float(parts[2]), #y1
-                    float(parts[3]), #vx1
-                    float(parts[4]), #vy1
-                    float(parts[5]), #x2
-                    float(parts[6]), #y2
-                    float(parts[7]), #vx2
-                    float(parts[8]), #vy2
-                    float(parts[9]), #x3
-                    float(parts[10]), #y3
-                    float(parts[11]), #vx3
-                    float(parts[12]), #vy3
-                     ])
-    return np.array(rows)
-
-def load_test_values(file_name):
-    rows=[]
-    lines = open(file_name).readlines()
-    for line in lines[1:]:
-        parts = line.split(',')
-        rows.append([float(parts[0]), #timestep
-                     float(parts[1]), #x1
-                     float(parts[2]), #y1
-                     float(parts[3]), #x2
-                     float(parts[4]), #y2
-                     float(parts[5]), #x3
-                     float(parts[6])  #y3
-                     ])
-    return np.array(rows)
-
 train_data = pd.read_csv("X_train.csv")
 # train_data = load_train_values('X_train.csv')
 # test_data = pd.read_csv("X_test.csv")
@@ -86,7 +49,7 @@ best_model_mse = 99
 count = 1
 for i in range(0, N):
     degree=i+1 #degree of polynomial
-    model = make_pipeline(PolynomialFeatures(degree),LinearRegression())
+    model = make_pipeline(PolynomialFeatures(degree), LinearRegression())
     # model = LinearRegression()
     model.fit(X_train, Y_train)
     y_pred = model.predict(X_val)
