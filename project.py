@@ -102,3 +102,5 @@ for i in range(0, N):
     pickle.dump(model, open(filename, 'wb'))
     count = count+1
     print(f"Step {count-1} with Mean Squared Error: {mse}")
+    
+    #TODO load by batches
