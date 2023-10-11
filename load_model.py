@@ -1,16 +1,21 @@
 import pandas as pd
 import pickle
 import numpy as np
+import joblib
 
 # load the model from disk
-loaded_model = pickle.load(open('best_model copy.plt', 'rb'))
+loaded_model = pickle.load(open('best_model.plt', 'rb'))
 X_test = pd.read_csv("X_test.csv")
+loaded_x_scaler = joblib.load('x_scaler.pkl')
+loaded_y_scaler = joblib.load('y_scaler.pkl')
+
 arr = []
 for line in X_test.values:
     arr.append([line[1], line[2], line[3], line[4], line[5], line[6], line[7]])
+arr = loaded_x_scaler.transform(arr)
 result = loaded_model.predict(arr)
-
-result = pd.DataFrame(result)
+Y_test_inverted = loaded_y_scaler.inverse_transform(result)
+result = pd.DataFrame(Y_test_inverted)
 
 # Define custom headers
 custom_headers = ["x_1",
