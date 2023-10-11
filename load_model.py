@@ -2,18 +2,31 @@ import pandas as pd
 import pickle
 import numpy as np
 import joblib
+import math
+
+def flatten_comprehension(matrix):
+     return [item for row in matrix for item in row]
 
 # load the model from disk
 loaded_model = pickle.load(open('best_model.plt', 'rb'))
 X_test = pd.read_csv("X_test.csv")
 loaded_x_scaler = joblib.load('x_scaler.pkl')
 loaded_y_scaler = joblib.load('y_scaler.pkl')
+BATCH_SIZE=300000
 
 arr = []
 for line in X_test.values:
     arr.append([line[1], line[2], line[3], line[4], line[5], line[6], line[7]])
+    
 arr = loaded_x_scaler.transform(arr)
-result = loaded_model.predict(arr)
+x_test_batches = np.array_split(arr, math.ceil(len(arr) / BATCH_SIZE))
+result = []
+for x_test in x_test_batches:
+    prediction = loaded_model.predict(x_test)
+    for i in range(0, len(prediction)):
+        result.append(prediction[i])
+
+#result = loaded_model.predict(arr)
 Y_test_inverted = loaded_y_scaler.inverse_transform(result)
 result = pd.DataFrame(Y_test_inverted)
 
