@@ -8,11 +8,11 @@ def flatten_comprehension(matrix):
      return [item for row in matrix for item in row]
 
 # load the model from disk
-loaded_model = pickle.load(open('best_model.plt', 'rb'))
+loaded_model = pickle.load(open('models/best_model.plt', 'rb'))
 X_test = pd.read_csv("X_test.csv")
 loaded_x_scaler = joblib.load('x_scaler.pkl')
 loaded_y_scaler = joblib.load('y_scaler.pkl')
-BATCH_SIZE=300000
+BATCH_SIZE=30000000
 
 arr = []
 for line in X_test.values:
