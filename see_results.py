@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 NR_TEST_SAMPLES = 257
 arr=[]
 X_train = pd.read_csv("X_train.csv")
-path = "models/models-2023-10-16_12-18-04"
-loaded_model = pickle.load(open(f'{path}/model_0.plt', 'rb'))
+path = "models/_potential_models-2023-10-16_14-56-02"
+loaded_model = pickle.load(open(f'{path}/model_1.plt', 'rb'))
 USE_SCALLER = False
 
 if USE_SCALLER:
@@ -56,7 +56,8 @@ for line in X_train.values:
     except:
         angle_b3=0
     
-    arr.append([line[0], line[1], line[2], line[5], line[6], line[9], line[10], b1_b2, b1_b3, b2_b3, Ox, Oy, angle_b1, angle_b2, angle_b3])
+    # arr.append([line[0], line[1], line[2], line[5], line[6], line[9], line[10], b1_b2, b1_b3, b2_b3, Ox, Oy, angle_b1, angle_b2, angle_b3])
+    arr.append([line[0], line[1], line[2], line[5], line[6], line[9], line[10], b1_b2, b1_b3, b2_b3])
     # arr.append([line[0],  b1_b2, b1_b3, b2_b3, Ox, Oy])
 
 tests = np.array_split(arr, math.ceil(len(arr) / NR_TEST_SAMPLES))
