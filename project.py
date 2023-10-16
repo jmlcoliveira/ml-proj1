@@ -97,7 +97,7 @@ Y_data = np.array(Y_data)
 # Combine and shuffle the batches
 combined = list(zip(X_data, Y_data))
 np.random.shuffle(combined)
-X_train, Y_train = zip(*combined)
+X_data, Y_data = zip(*combined)
 
 # # Create scalers for X and Y separately
 # x_scaler = StandardScaler()
